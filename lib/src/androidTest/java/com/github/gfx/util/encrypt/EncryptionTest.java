@@ -15,9 +15,22 @@ public class EncryptionTest extends AndroidTestCase {
                     String s = RandomStringUtils.randomAscii(len);
                     String encrypted = encryption.encrypt(s);
                     String decrypted = encryption.decrypt(encrypted);
+                    assert !s.equals(encrypted);
                     assert decrypted.equals(s);
                 }
             }
         }
+    }
+
+    public void testMultiByteString() throws Exception {
+        String privateKey = RandomStringUtils.randomAscii(16);
+        Encryption encryption = new Encryption(privateKey);
+
+        String s = "日本語の混じった文字列。 Hello, world!";
+        String encrypted = encryption.encrypt(s);
+        String decrypted = encryption.decrypt(encrypted);
+
+        assert !s.equals(encrypted);
+        assert decrypted.equals(s);
     }
 }
