@@ -26,8 +26,7 @@ public class Encryption {
     private final Cipher cipher;
 
     public Encryption(@NonNull String privateKey) {
-        this.privateKey = getKey(privateKey.getBytes(CHARSET));
-        assert this.privateKey.getEncoded().length == KEY_LENGTH;
+        this.privateKey = getKey(privateKey);
 
         try {
             cipher = Cipher.getInstance(ALGORITHM_MODE);
@@ -37,8 +36,16 @@ public class Encryption {
     }
 
     @NonNull
-    private static SecretKeySpec getKey(@NonNull byte[] privateKey) {
-        return new SecretKeySpec(privateKey, ALGORITHM_MODE);
+    private static SecretKeySpec getKey(@NonNull String privateKey) {
+        if (privateKey.length() < KEY_LENGTH) {
+            for (int i = privateKey.length(); i < 16; i++) {
+                privateKey += ".";
+            }
+        } else if (privateKey.length() > KEY_LENGTH) {
+            privateKey = privateKey.substring(0, 16);
+        }
+
+        return new SecretKeySpec(privateKey.getBytes(CHARSET), ALGORITHM_MODE);
     }
 
     @NonNull
