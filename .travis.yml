@@ -1,4 +1,7 @@
 language: android
+env:
+    - ANDROID_TARGET=10
+    - ANDROID_TARGET=19
 before_install:
     - export TERM=dumb # to get clean gradle output
     - echo no | android create avd --force -n test -t $ANDROID_TARGET -b armeabi-v7a
