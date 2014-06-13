@@ -13,13 +13,13 @@ import java.util.Set;
 
 public class EncryptedSharedPreferences implements SharedPreferences {
 
-    private static String getDefaultPreferenceName(@NonNull Context context) {
+    /* package */ static String getDefaultPreferenceName(@NonNull Context context) {
         return context.getPackageName() + "_preferences_encrypted";
     }
 
     private static SharedPreferences getDefaultSharedPreferences(@NonNull Context context) {
-        return context
-                .getSharedPreferences(getDefaultPreferenceName(context), Context.MODE_PRIVATE);
+        String preferenceName = getDefaultPreferenceName(context);
+        return context.getSharedPreferences(preferenceName, Context.MODE_PRIVATE);
     }
 
     private final SharedPreferences prefs;
@@ -57,10 +57,9 @@ public class EncryptedSharedPreferences implements SharedPreferences {
         Map<String, String> newMap = new HashMap<>();
         for (Map.Entry<String, ?> entry : map.entrySet()) {
             if (entry.getValue() != null) {
-                String encrypted = (String)entry.getValue();
+                String encrypted = (String) entry.getValue();
                 newMap.put(entry.getKey(), decrypt(encrypted));
-            }
-            else {
+            } else {
                 newMap.put(entry.getKey(), null);
             }
         }

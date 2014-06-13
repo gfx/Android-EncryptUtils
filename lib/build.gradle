@@ -5,6 +5,7 @@ apply plugin: 'android-power-assert'
 dependencies {
     compile 'com.android.support:support-annotations:+'
     androidTestCompile 'org.apache.commons:commons-lang3:+'
+    androidTestCompile 'org.apache.commons:commons-io:+'
 }
 
 android {
