@@ -6,6 +6,7 @@ before_install:
     - export TERM=dumb # to get clean gradle output
     - echo no | android create avd --force -n test -t $TARGET -b $ABI
     - emulator -avd test -no-skin -no-audio -no-window &
+    - ./gradlew tasks # install dependencies while the eumulator is booting
     - curl -L https://raw.githubusercontent.com/embarkmobile/android-sdk-installer/master/wait_for_emulator | bash
 script:
     - ./gradlew --stacktrace lint
