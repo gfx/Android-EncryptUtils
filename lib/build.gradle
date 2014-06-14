@@ -34,3 +34,7 @@ android {
         }
     }
 }
+
+coveralls {
+    jacocoReportPath 'lib/build/outputs/reports/coverage/debug/report.xml'
+}
