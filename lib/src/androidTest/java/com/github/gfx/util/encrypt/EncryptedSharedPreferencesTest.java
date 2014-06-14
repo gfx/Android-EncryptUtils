@@ -171,7 +171,8 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
                             String key) {
                         latch.countDown();
                     }
-                });
+                }
+        );
         prefs.edit()
                 .putString("foo", "xyzzy")
                 .apply();
@@ -234,7 +235,8 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
         SharedPreferences prefs2 = new EncryptedSharedPreferences(base, "012345678912345b");
 
         final CountDownLatch latch = new CountDownLatch(2);
-        SharedPreferences.OnSharedPreferenceChangeListener listener =                 new SharedPreferences.OnSharedPreferenceChangeListener() {
+        SharedPreferences.OnSharedPreferenceChangeListener listener
+                = new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
                     String key) {
