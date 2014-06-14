@@ -254,6 +254,14 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
         assert latch.await(10, TimeUnit.SECONDS);
 
         assert prefs1.getString("foo", "*").equals("1");
+
+        try {
+            assert !prefs1.getString("bar", "*").equals("*");
+            assert !prefs1.getString("bar", "1").equals("2");
+        } catch (Encryption.UnexpectedDecryptionStateException e) {
+            // ignore
+        }
+
         assert !prefs1.getString("bar", "*").equals("*");
         assert !prefs1.getString("bar", "1").equals("2");
 
