@@ -13,6 +13,12 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * A {@link android.content.SharedPreferences} implementation where its values are encrypted by
+ * {@link com.github.gfx.util.encrypt.Encryption}.
+ *
+ * @see com.github.gfx.util.encrypt.Encryption
+ */
 public class EncryptedSharedPreferences implements SharedPreferences {
 
     /* package */
@@ -32,6 +38,14 @@ public class EncryptedSharedPreferences implements SharedPreferences {
     private final IdentityHashMap<OnSharedPreferenceChangeListener, OnSharedPreferenceChangeListener>
             listenerWrappers = new IdentityHashMap<>();
 
+    /**
+     * Creates a default wrapper class for {@link android.content.Context}. The private key for
+     * {@link com.github.gfx.util.encrypt.Encryption} is determined by {@code
+     * android.provider.Settings.Secure.ANDROID_ID}.
+     *
+     * @param context - an application context used to get a base {@link android.content.SharedPreferences}
+     *                and {@link com.github.gfx.util.encrypt.Encryption}
+     */
     public EncryptedSharedPreferences(@NonNull Context context) {
         this(getDefaultSharedPreferences(context), new Encryption(context));
     }

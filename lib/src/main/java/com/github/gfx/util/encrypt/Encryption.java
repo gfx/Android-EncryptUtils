@@ -1,5 +1,6 @@
 package com.github.gfx.util.encrypt;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.provider.Settings;
@@ -7,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.util.Base64;
 
 import java.nio.charset.Charset;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.Cipher;
@@ -14,6 +16,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+@SuppressLint("Assert")
 public class Encryption {
 
     private static final String TAG = Encryption.class.getSimpleName();
@@ -27,23 +30,42 @@ public class Encryption {
     public static final int KEY_LENGTH = 128 / 8;
 
     @NonNull
-    public static String getDefaultPrivateKey(@NonNull Context context) {
+    public static byte[] getDefaultPrivateKey(@NonNull Context context) {
         ContentResolver contentResolver = context.getContentResolver();
-        return Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID);
+        byte[] privateKey = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+                .getBytes(CHARSET);
+        assert privateKey.length == KEY_LENGTH;
+
+        byte[] packageDigest = md5(context.getPackageName().getBytes(CHARSET));
+        assert packageDigest.length == KEY_LENGTH;
+
+        for (int i = 0; i < privateKey.length; i++) {
+            privateKey[i] ^= packageDigest[i];
+        }
+        return privateKey;
+    }
+
+    private static byte[] md5(byte[] value) {
+        MessageDigest md5;
+        try {
+            md5 = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            throw new AssertionError(e);
+        }
+        return md5.digest(value);
     }
 
 
     @NonNull
-    private static SecretKeySpec getKey(@NonNull String privateKey) {
-        if (privateKey.length() < KEY_LENGTH) {
+    private static SecretKeySpec createKeySpec(@NonNull byte[] privateKey) {
+        if (privateKey.length < KEY_LENGTH) {
             throw new IllegalArgumentException("private key is too short."
-                    + " Expected=" + KEY_LENGTH +" but got="  + privateKey.length());
-        } else if (privateKey.length() > KEY_LENGTH) {
+                    + " Expected=" + KEY_LENGTH + " but got=" + privateKey.length);
+        } else if (privateKey.length > KEY_LENGTH) {
             throw new IllegalArgumentException("private key is too long."
-                    + " Expected=" + KEY_LENGTH +" but got="  + privateKey.length());
+                    + " Expected=" + KEY_LENGTH + " but got=" + privateKey.length);
         }
-
-        return new SecretKeySpec(privateKey.getBytes(CHARSET), ALGORITHM_MODE);
+        return new SecretKeySpec(privateKey, ALGORITHM_MODE);
     }
 
 
@@ -56,7 +78,11 @@ public class Encryption {
     }
 
     public Encryption(@NonNull String privateKey) {
-        this.privateKey = getKey(privateKey);
+        this(privateKey.getBytes(CHARSET));
+    }
+
+    public Encryption(@NonNull byte[] privateKey) {
+        this.privateKey = createKeySpec(privateKey);
 
         try {
             cipher = Cipher.getInstance(ALGORITHM_MODE);
@@ -99,6 +125,7 @@ public class Encryption {
     }
 
     public class UnexpectedStateException extends RuntimeException {
+
         public UnexpectedStateException(Throwable throwable) {
             super(throwable);
         }

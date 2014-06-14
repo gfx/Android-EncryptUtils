@@ -3,12 +3,42 @@ package com.github.gfx.util.encrypt;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import android.content.ContentResolver;
+import android.content.Context;
 import android.test.AndroidTestCase;
+import android.test.mock.MockContext;
+
+import java.util.Arrays;
 
 public class EncryptionTest extends AndroidTestCase {
 
-    public void testDefaultPrivateKey() throws Exception {
-        assert Encryption.getDefaultPrivateKey(getContext()).length() == Encryption.KEY_LENGTH;
+    public void testDefaultPrivateKeyForContext() throws Exception {
+        final Context context = getContext();
+
+        byte[] k1 = Encryption.getDefaultPrivateKey(new MockContext() {
+            @Override
+            public String getPackageName() {
+                return "a";
+            }
+
+            @Override
+            public ContentResolver getContentResolver() {
+                return context.getContentResolver();
+            }
+        });
+        byte[] k2 = Encryption.getDefaultPrivateKey(new MockContext() {
+            @Override
+            public String getPackageName() {
+                return "b";
+            }
+
+            @Override
+            public ContentResolver getContentResolver() {
+                return context.getContentResolver();
+            }
+        });
+
+        assert !Arrays.equals(k1, k2);
     }
 
     public void testTooShortPrivateKey() throws Exception {
