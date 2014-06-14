@@ -77,4 +77,16 @@ public class EncryptionTest extends AndroidTestCase {
 
         assert decrypted2nd.equals(decrypted);
     }
+
+    public void testBadEncryption() throws Exception {
+        Encryption encryption = new Encryption(getContext());
+
+        try {
+            encryption.decrypt("foo");
+            fail();
+        } catch (Encryption.UnexpectedDecryptionStateException e) {
+            // ok
+        }
+    }
 }
+
