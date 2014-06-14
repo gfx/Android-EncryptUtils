@@ -264,9 +264,6 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
             // ignore
         }
 
-        assert !prefs1.getString("bar", "*").equals("*");
-        assert !prefs1.getString("bar", "1").equals("2");
-
         base.unregisterOnSharedPreferenceChangeListener(listener);
         base.edit().clear().apply();
     }
