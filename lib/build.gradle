@@ -1,6 +1,7 @@
 apply plugin: 'android-sdk-manager'
 apply plugin: 'android-library'
 apply plugin: 'android-power-assert'
+apply plugin: 'coveralls'
 
 dependencies {
     compile 'com.android.support:support-annotations:+'
