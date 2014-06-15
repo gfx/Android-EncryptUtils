@@ -11,4 +11,5 @@ before_install:
 script:
     - ./gradlew --stacktrace lint
     - ./gradlew --stacktrace connectedCheck || (adb logcat -t 100 && false)
-    - ./gradlew --stacktrace coveralls
+after_success:
+    - #./gradlew --stacktrace coveralls

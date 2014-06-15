@@ -2,8 +2,6 @@ apply plugin: 'android-sdk-manager'
 apply plugin: 'android-library'
 apply plugin: 'android-power-assert'
 
-apply plugin: 'coveralls'
-
 apply from: '../metadata.gradle'
 //apply from: 'https://raw.githubusercontent.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
 apply from: 'https://raw.githubusercontent.com/shamanland/gradle-mvn-push/master/gradle-mvn-push.gradle'
@@ -38,9 +36,5 @@ android {
             testCoverageEnabled true
         }
     }
-}
-
-coveralls {
-    jacocoReportPath 'build/outputs/reports/coverage/debug/report.xml'
 }
 
