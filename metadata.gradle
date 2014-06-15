@@ -1,0 +1,35 @@
+// Artifact Metadata
+
+// see https://github.com/chrisbanes/gradle-mvn-push/blob/master/gradle-mvn-push.gradle
+
+def versionCode(versionName) {
+    def parts = versionName.split(/\./).collect {
+        Integer.parseInt(it)
+    }
+    return parts[0] * 1000000 + parts[1] * 1000 + parts[2]
+}
+
+ext.VERSION_NAME = '1.0.0'
+ext.VERSION_CODE = versionCode(ext.VERSION_NAME)
+ext.GROUP = 'com.github.gfx.util.encrpt'
+
+ext.POM_NAME = 'Android EncryptUtils'
+ext.POM_DESCRIPTION = 'A set of classes to conceal credentials'
+ext.POM_ARTIFACT_ID = 'encrypt-utils'
+ext.POM_PACKAGING = 'aar'
+
+def GITHUB_ID = "gfx/Android-EncryptUtils"
+def REPOSITORY_URL = "https://github.com/${GITHUB_ID}"
+def REPOSITORY_SCM = "scm:git@github.com:${GITHUB_ID}.git"
+
+ext.POM_URL = REPOSITORY_URL
+ext.POM_SCM_URL = REPOSITORY_URL
+ext.POM_SCM_CONNECTION = REPOSITORY_SCM
+ext.POM_SCM_DEV_CONNECTION = REPOSITORY_SCM
+ext.POM_LICENCE_NAME = 'Apache License 2.0'
+ext.POM_LICENCE_URL = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+ext.POM_LICENCE_DIST = 'repo'
+ext.POM_DEVELOPER_ID = 'gfx'
+ext.POM_DEVELOPER_NAME = 'FUJI Goro'
+ext.POM_DEVELOPER_EMAIL = 'gfuji@cpan.org'
+

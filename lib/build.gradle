@@ -1,7 +1,12 @@
 apply plugin: 'android-sdk-manager'
 apply plugin: 'android-library'
 apply plugin: 'android-power-assert'
+
 apply plugin: 'coveralls'
+
+apply from: '../metadata.gradle'
+//apply from: 'https://raw.githubusercontent.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
+apply from: 'https://raw.githubusercontent.com/shamanland/gradle-mvn-push/master/gradle-mvn-push.gradle'
 
 dependencies {
     compile 'com.android.support:support-annotations:+'
@@ -15,8 +20,8 @@ android {
     defaultConfig {
         minSdkVersion 10 // 2.3.3
         targetSdkVersion 19
-        versionCode 1
-        versionName '1.0'
+        versionCode VERSION_CODE
+        versionName VERSION_NAME
     }
 
     compileOptions {
@@ -36,5 +41,6 @@ android {
 }
 
 coveralls {
-    jacocoReportPath 'lib/build/outputs/reports/coverage/debug/report.xml'
+    jacocoReportPath 'build/outputs/reports/coverage/debug/report.xml'
 }
+
