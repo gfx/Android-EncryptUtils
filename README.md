@@ -3,8 +3,8 @@
 This is a set of class libraries that provides a way to save credentials in Android devices.
 
 Note that this is not perfectly secure because private keys could not be concealed so the attacker
-are able to decrypt data if they have the device. However, this library should prevent from
-10-minutes cracking.
+are able to decrypt data if they have the device and enough time. However, this library should
+prevent data from 10-munutes cracking.
 
 ## Encryption
 
