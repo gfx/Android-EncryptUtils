@@ -7,7 +7,9 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Base64;
 
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -21,11 +23,16 @@ import java.util.Set;
  */
 public class EncryptedSharedPreferences implements SharedPreferences {
 
+    @NonNull
+    private static Charset CHARSET = Charset.forName("UTF-8");
+
     /* package */
+    @NonNull
     static String getDefaultPreferenceName(@NonNull Context context) {
         return context.getPackageName() + "_preferences_encrypted";
     }
 
+    @NonNull
     private static SharedPreferences getDefaultSharedPreferences(@NonNull Context context) {
         String preferenceName = getDefaultPreferenceName(context);
         return context.getSharedPreferences(preferenceName, Context.MODE_PRIVATE);
@@ -62,24 +69,35 @@ public class EncryptedSharedPreferences implements SharedPreferences {
     }
 
     @NonNull
-    private String encrypt(@NonNull String value) {
+    private String encodeKey(@NonNull String value) {
+        return Base64.encodeToString(value.getBytes(CHARSET), Base64.NO_WRAP);
+    }
+
+    @NonNull
+    private String decodeKey(@NonNull String value) {
+        return new String(Base64.decode(value.getBytes(CHARSET), Base64.NO_WRAP), CHARSET);
+    }
+
+    @NonNull
+    private String encodeValue(@NonNull String value) {
         return encryption.encrypt(value);
     }
 
     @NonNull
-    private String decrypt(@NonNull String value) {
+    private String decodeValue(@NonNull String value) {
         return encryption.decrypt(value);
     }
 
     @Override
-    public Map<String, ?> getAll() {
+    public synchronized Map<String, ?> getAll() {
         Map<String, String> newMap = new HashMap<>();
         for (Map.Entry<String, ?> entry : base.getAll().entrySet()) {
+            String realKey = decodeKey(entry.getKey());
             if (entry.getValue() != null) {
                 String encrypted = (String) entry.getValue();
-                newMap.put(entry.getKey(), decrypt(encrypted));
+                newMap.put(realKey, decodeValue(encrypted));
             } else {
-                newMap.put(entry.getKey(), null);
+                newMap.put(realKey, null);
             }
         }
         return newMap;
@@ -87,44 +105,46 @@ public class EncryptedSharedPreferences implements SharedPreferences {
 
     @Override
     @Nullable
-    public String getString(@NonNull String key, @Nullable String defValue) {
-        String encrypted = base.getString(key, null);
-        return encrypted != null ? decrypt(encrypted) : defValue;
+    public synchronized  String getString(@NonNull String key, @Nullable String defValue) {
+        String realKey = encodeKey(key);
+        String encoded = base.getString(realKey, null);
+        return encoded != null ? decodeValue(encoded) : defValue;
     }
 
     @Override
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public Set<String> getStringSet(@NonNull String key, Set<String> defValues) {
+    public synchronized Set<String> getStringSet(@NonNull String key, Set<String> defValues) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public int getInt(@NonNull String key, int defValue) {
-        String encrypted = base.getString(key, null);
-        return encrypted != null ? Integer.parseInt(decrypt(encrypted)) : defValue;
+    public synchronized int getInt(@NonNull String key, int defValue) {
+        String value = getString(key, null);
+        return value != null ? Integer.parseInt(value) : defValue;
     }
 
     @Override
-    public long getLong(@NonNull String key, long defValue) {
-        String encrypted = base.getString(key, null);
-        return encrypted != null ? Long.parseLong(decrypt(encrypted)) : defValue;
+    public synchronized long getLong(@NonNull String key, long defValue) {
+        String value = getString(key, null);
+        return value != null ? Long.parseLong(value) : defValue;
     }
 
     @Override
-    public float getFloat(@NonNull String key, float defValue) {
-        String encrypted = base.getString(key, null);
-        return encrypted != null ? Float.parseFloat(decrypt(encrypted)) : defValue;
+    public synchronized float getFloat(@NonNull String key, float defValue) {
+        String value = getString(key, null);
+        return value != null ? Float.parseFloat(value) : defValue;
     }
 
     @Override
-    public boolean getBoolean(@NonNull String key, boolean defValue) {
-        String encrypted = base.getString(key, null);
-        return encrypted != null ? Boolean.parseBoolean(decrypt(encrypted)) : defValue;
+    public synchronized boolean getBoolean(@NonNull String key, boolean defValue) {
+        String value = getString(key, null);
+        return value != null ? Boolean.parseBoolean(value) : defValue;
     }
 
     @Override
-    public boolean contains(@NonNull String key) {
-        return base.contains(key);
+    public synchronized boolean contains(@NonNull String key) {
+        String realKey = encodeKey(key);
+        return base.contains(realKey);
     }
 
     @SuppressLint("CommitPrefEdits")
@@ -139,7 +159,7 @@ public class EncryptedSharedPreferences implements SharedPreferences {
         OnSharedPreferenceChangeListener wrapper = new OnSharedPreferenceChangeListener() {
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                listener.onSharedPreferenceChanged(EncryptedSharedPreferences.this, key);
+                listener.onSharedPreferenceChanged(EncryptedSharedPreferences.this, decodeKey(key));
             }
         };
         listenerWrappers.put(listener, wrapper);
@@ -173,60 +193,58 @@ public class EncryptedSharedPreferences implements SharedPreferences {
         }
 
         @Override
-        public Editor putString(String key, String value) {
-            editor.putString(key, value != null ? encrypt(value) : null);
+        public synchronized Editor putString(@NonNull String key, @Nullable String value) {
+            String realKey = encodeKey(key);
+            editor.putString(realKey, value != null ? encodeValue(value) : null);
             return this;
         }
 
         @Override
         @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-        public Editor putStringSet(String key, Set<String> values) {
+        public synchronized Editor putStringSet(String key, Set<String> values) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public Editor putInt(String key, int value) {
-            editor.putString(key, encrypt(String.valueOf(value)));
+        public synchronized Editor putInt(String key, int value) {
+            return putString(key, String.valueOf(value));
+        }
+
+        @Override
+        public synchronized Editor putLong(String key, long value) {
+            return putString(key, String.valueOf(value));
+        }
+
+        @Override
+        public synchronized Editor putFloat(String key, float value) {
+            return putString(key, String.valueOf(value));
+        }
+
+        @Override
+        public synchronized Editor putBoolean(String key, boolean value) {
+            return putString(key, String.valueOf(value));
+        }
+
+        @Override
+        public synchronized  Editor remove(String key) {
+            String realKey = encodeKey(key);
+            editor.remove(realKey);
             return this;
         }
 
         @Override
-        public Editor putLong(String key, long value) {
-            editor.putString(key, encrypt(String.valueOf(value)));
-            return this;
-        }
-
-        @Override
-        public Editor putFloat(String key, float value) {
-            editor.putString(key, encrypt(String.valueOf(value)));
-            return this;
-        }
-
-        @Override
-        public Editor putBoolean(String key, boolean value) {
-            editor.putString(key, encrypt(String.valueOf(value)));
-            return this;
-        }
-
-        @Override
-        public Editor remove(String key) {
-            editor.remove(key);
-            return this;
-        }
-
-        @Override
-        public Editor clear() {
+        public synchronized Editor clear() {
             editor.clear();
             return this;
         }
 
         @Override
-        public boolean commit() {
+        public synchronized boolean commit() {
             return editor.commit();
         }
 
         @Override
-        public void apply() {
+        public synchronized void apply() {
             editor.apply();
         }
     }

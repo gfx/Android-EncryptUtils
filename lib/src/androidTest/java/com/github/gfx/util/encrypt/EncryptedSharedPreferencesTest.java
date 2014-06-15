@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.test.AndroidTestCase;
+import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +33,11 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
 
     @Override
     public void tearDown() throws Exception {
+        if (false) {
+            String sharedPrefsContent = slurpSharedPrefsFile(
+                    EncryptedSharedPreferences.getDefaultPreferenceName(getContext()));
+            Log.d("TEST", sharedPrefsContent);
+        }
         prefs.edit()
                 .clear()
                 .commit();
@@ -40,6 +46,16 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
         super.tearDown();
         System.gc();
     }
+
+    private String slurpSharedPrefsFile(String name) throws IOException {
+        Context context = getContext();
+        assert context != null;
+        File appDir = context.getFilesDir().getParentFile();
+        File sharedPrefsDir = new File(appDir, "shared_prefs");
+        File sharedPrefsFile = new File(sharedPrefsDir, name + ".xml");
+        return FileUtils.readFileToString(sharedPrefsFile, "UTF-8");
+    }
+
 
     public void testString() throws Exception {
         prefs.edit().putString("foo", "bar").apply();
@@ -151,15 +167,6 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
 
         assert prefs.getString("foo", "*").equals("*");
         assert prefs.getString("bar", "*").equals("*");
-    }
-
-    private String slurpSharedPrefsFile(String name) throws IOException {
-        Context context = getContext();
-        assert context != null;
-        File appDir = context.getFilesDir().getParentFile();
-        File sharedPrefsDir = new File(appDir, "shared_prefs");
-        File sharedPrefsFile = new File(sharedPrefsDir, name + ".xml");
-        return FileUtils.readFileToString(sharedPrefsFile, "UTF-8");
     }
 
     public void testFileEncrypted() throws Exception {

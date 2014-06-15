@@ -16,6 +16,10 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+/**
+ * This class performs encryption and decryption for plain texts.
+ * Note that this class is <strong>not thread-safe</strong> so you have to lock calling methods explicitly.
+ */
 @SuppressLint("Assert")
 public class Encryption {
 
@@ -92,7 +96,7 @@ public class Encryption {
     }
 
     @NonNull
-    public synchronized String encrypt(@NonNull String plainText) {
+    public String encrypt(@NonNull String plainText) {
         byte[] encrypted;
 
         try {
@@ -110,7 +114,7 @@ public class Encryption {
     }
 
     @NonNull
-    public synchronized String decrypt(@NonNull String encrypted) {
+    public String decrypt(@NonNull String encrypted) {
         byte[] buffer = Base64.decode(encrypted.getBytes(CHARSET), Base64.NO_WRAP);
         byte[] decrypted;
 
