@@ -6,6 +6,14 @@ Note that this is not perfectly secure because private keys could not be conceal
 are able to decrypt data if they have the device and enough time. However, this library should
 prevent data from 10-munutes cracking.
 
+## Gradle Dependencies
+
+```
+dependencies {
+    compile 'com.github.gfx.util.encrypt:encrypt-utils:1.0.+'
+}
+```
+
 ## Encryption
 
 This is a utility to encrypt and decrypt credentials.
