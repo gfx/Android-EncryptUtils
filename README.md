@@ -27,6 +27,14 @@ String decrypted = encrypt.decrypt(encrypted);
 assert plainText.equals(decrypted);
 ```
 
+You can also specify a private key.
+
+```java
+byte[] privateKey = ...;
+assert privateKey.length == 16; // you must ensure!
+Encryption encryption = new Encryption(privateKey);
+```
+
 ## EncrptedSharedPreferences
 
 This is an implementation of SharedPreferences that encrypts data.
