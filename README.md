@@ -2,6 +2,10 @@
 
 This is a set of class libraries that provides a way to save credentials in Android devices.
 
+Note that this is not perfectly secure because private keys could not be concealed so the attacker
+are able to decrypt data if they have the device. However, this library should prevent from
+10-minutes cracking.
+
 ## Encryption
 
 This is a utility to encrypt and decrypt credentials.
@@ -17,8 +21,7 @@ assert plainText.equals(decrypted);
 
 ## EncrptedSharedPreferences
 
-This is an implementation of SharedPreferences that encrypts data automatically.
-
+This is an implementation of SharedPreferences that encrypts data.
 
 ```java
 SharedPreferences prefs = new EncryptedSharedPreferences(context);
@@ -27,6 +30,22 @@ prefs.editor()
     .putString("email", email)
     .putString("password", password)
     .apply();
+```
+
+### HOW DATA ARE STORED
+
+As `SharedPreferences` does, `EncryptedSHaredPreferences` saves data in XML and its values
+are encrypted in [AES](http://en.wikipedia.org/wiki/Advanced_Encryption_Standard) while
+its keys are just encoded in Base64 format.
+
+The following content is an example of shared preferences file:
+
+```xml
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <string name="Zm9v">WvfCT5pyTP9srHQxf5nKXxH7Cw==</string>
+    <string name="YmFy">RpLGPJ736a9vctawIz9IbCBYeA==</string>
+</map>
 ```
 
 ## AUTHOR

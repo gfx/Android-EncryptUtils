@@ -10,6 +10,7 @@ before_install:
     - curl -L https://raw.githubusercontent.com/embarkmobile/android-sdk-installer/master/wait_for_emulator | bash
 script:
     - ./gradlew --stacktrace lint
+    - # export COVERAGE=true
     - ./gradlew --stacktrace connectedCheck || (adb logcat -t 100 && false)
 after_success:
     - #./gradlew --stacktrace coveralls

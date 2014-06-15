@@ -6,6 +6,8 @@ apply from: '../metadata.gradle'
 //apply from: 'https://raw.githubusercontent.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
 apply from: 'https://raw.githubusercontent.com/shamanland/gradle-mvn-push/master/gradle-mvn-push.gradle'
 
+def COVERAGE = Boolean.parseBoolean(System.getenv('COVERAGE'))
+
 dependencies {
     compile 'com.android.support:support-annotations:+'
     androidTestCompile 'org.apache.commons:commons-lang3:+'
@@ -28,12 +30,14 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
 
-    jacoco {
-        version '0.7.+'
-    }
-    buildTypes {
-        debug {
-            testCoverageEnabled true
+    if (COVERAGE) {
+        jacoco {
+            version '0.7.+'
+        }
+        buildTypes {
+            debug {
+                testCoverageEnabled true
+            }
         }
     }
 }
