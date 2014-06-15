@@ -8,7 +8,7 @@ prevent data from 10-munutes cracking.
 
 ## Gradle Dependencies
 
-```
+```gradle
 dependencies {
     compile 'com.github.gfx.util.encrypt:encrypt-utils:1.0.+'
 }
@@ -17,6 +17,8 @@ dependencies {
 ## Encryption
 
 This is a utility to encrypt and decrypt credentials.
+`Encryption` creates a private key from `context`'s
+packag name and `ANDROID_ID` by default.
 
 ```java
 Encryption encryption = new Encryption(context);
