@@ -10,7 +10,7 @@ prevent data from 10-munutes cracking.
 
 ```gradle
 dependencies {
-    compile 'com.github.gfx.util.encrypt:encrypt-utils:1.1.+'
+    compile 'com.github.gfx.util.encrypt:android-encrypt-utils:1.2.+'
 }
 ```
 
