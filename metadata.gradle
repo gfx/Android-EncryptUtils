@@ -9,7 +9,7 @@ def versionCode(versionName) {
     return parts[0] * 1000000 + parts[1] * 1000 + parts[2]
 }
 
-ext.VERSION_NAME = '1.0.0'
+ext.VERSION_NAME = '1.1.0'
 ext.VERSION_CODE = versionCode(ext.VERSION_NAME)
 ext.GROUP = 'com.github.gfx.util.encrypt'
 
