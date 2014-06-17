@@ -10,6 +10,7 @@ import android.test.mock.MockContext;
 
 import java.util.Arrays;
 
+@SuppressWarnings("Assert")
 public class EncryptionTest extends AndroidTestCase {
 
     public void testDefaultPrivateKeyForContext() throws Exception {

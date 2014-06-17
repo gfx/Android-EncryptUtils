@@ -18,7 +18,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 /**
  * This class performs encryption and decryption for plain texts.
- * Note that this class is <strong>not thread-safe</strong> so you have to lock calling methods explicitly.
+ * Note that this class is <strong>not thread-safe</strong> so you have to lock calling methods
+ * explicitly.
  */
 @SuppressLint("Assert")
 public class Encryption {
