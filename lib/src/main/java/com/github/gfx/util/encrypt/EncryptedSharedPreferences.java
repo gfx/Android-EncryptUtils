@@ -57,14 +57,19 @@ public class EncryptedSharedPreferences implements SharedPreferences {
         this(getDefaultSharedPreferences(context), new Encryption(context));
     }
 
-    public EncryptedSharedPreferences(@NonNull SharedPreferences sharedPreferences,
-            @NonNull String privateKey) {
-        this(sharedPreferences, new Encryption(privateKey));
+    public EncryptedSharedPreferences(@NonNull SharedPreferences base,
+            @NonNull Context contextForDefaultPrivateKey) {
+        this(base, new Encryption(contextForDefaultPrivateKey));
     }
 
-    public EncryptedSharedPreferences(@NonNull SharedPreferences sharedPreferences,
+    public EncryptedSharedPreferences(@NonNull SharedPreferences base,
+            @NonNull String privateKey) {
+        this(base, new Encryption(privateKey));
+    }
+
+    public EncryptedSharedPreferences(@NonNull SharedPreferences base,
             @NonNull Encryption encryption) {
-        base = sharedPreferences;
+        this.base = base;
         this.encryption = encryption;
     }
 
@@ -105,7 +110,7 @@ public class EncryptedSharedPreferences implements SharedPreferences {
 
     @Override
     @Nullable
-    public synchronized  String getString(@NonNull String key, @Nullable String defValue) {
+    public synchronized String getString(@NonNull String key, @Nullable String defValue) {
         String realKey = encodeKey(key);
         String encoded = base.getString(realKey, null);
         return encoded != null ? decodeValue(encoded) : defValue;
@@ -226,7 +231,7 @@ public class EncryptedSharedPreferences implements SharedPreferences {
         }
 
         @Override
-        public synchronized  Editor remove(String key) {
+        public synchronized Editor remove(String key) {
             String realKey = encodeKey(key);
             editor.remove(realKey);
             return this;

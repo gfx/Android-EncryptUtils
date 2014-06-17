@@ -5,6 +5,7 @@ import org.apache.commons.io.FileUtils;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.test.AndroidTestCase;
 import android.util.Log;
 
@@ -34,6 +35,7 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
     @Override
     public void tearDown() throws Exception {
         if (false) {
+            // dump the file content
             String sharedPrefsContent = slurpSharedPrefsFile(
                     EncryptedSharedPreferences.getDefaultPreferenceName(getContext()));
             Log.d("TEST", sharedPrefsContent);
@@ -56,6 +58,13 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
         return FileUtils.readFileToString(sharedPrefsFile, "UTF-8");
     }
 
+    public void testConstructorInterfaces() throws Exception {
+        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(getContext());
+        new EncryptedSharedPreferences(getContext());
+        new EncryptedSharedPreferences(p, getContext());
+        new EncryptedSharedPreferences(p, new Encryption("foo"));
+        new EncryptedSharedPreferences(p, "foo");
+    }
 
     public void testString() throws Exception {
         prefs.edit().putString("foo", "bar").apply();
