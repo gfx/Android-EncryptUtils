@@ -11,7 +11,7 @@ def versionCode(versionName) {
 
 ext.VERSION_NAME = '1.0.0'
 ext.VERSION_CODE = versionCode(ext.VERSION_NAME)
-ext.GROUP = 'com.github.gfx.util.encrpt'
+ext.GROUP = 'com.github.gfx.util.encrypt'
 
 ext.POM_NAME = 'Android EncryptUtils'
 ext.POM_DESCRIPTION = 'A set of classes to conceal credentials'
