@@ -9,13 +9,13 @@ def versionCode(versionName) {
     return parts[0] * 1000000 + parts[1] * 1000 + parts[2]
 }
 
-ext.VERSION_NAME = '1.2.0'
+ext.VERSION_NAME = '1.1.0'
 ext.VERSION_CODE = versionCode(ext.VERSION_NAME)
 ext.GROUP = 'com.github.gfx.util.encrypt'
 
 ext.POM_NAME = 'Android EncryptUtils'
 ext.POM_DESCRIPTION = 'A set of classes to conceal credentials'
-ext.POM_ARTIFACT_ID = 'android-encrypt-utils'
+ext.POM_ARTIFACT_ID = 'encrypt-utils'
 ext.POM_PACKAGING = 'aar'
 
 def GITHUB_ID = "gfx/Android-EncryptUtils"
