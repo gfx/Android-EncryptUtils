@@ -62,8 +62,8 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
         SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(getContext());
         new EncryptedSharedPreferences(getContext());
         new EncryptedSharedPreferences(p, getContext());
-        new EncryptedSharedPreferences(p, new Encryption("foo"));
-        new EncryptedSharedPreferences(p, "foo");
+        new EncryptedSharedPreferences(p, new Encryption("0123456789abcdef"));
+        new EncryptedSharedPreferences(p, "0123456789abcdef");
     }
 
     public void testString() throws Exception {
