@@ -219,7 +219,7 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
         );
 
         assert prefs.edit().putString(key, "bar").commit();
-        assert latch.await(5, TimeUnit.SECONDS);
+        assert latch.await(10, TimeUnit.SECONDS);
 
         assert events.size() == 1;
         assert events.contains(key);
@@ -241,7 +241,7 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
         assert prefs.edit()
                 .putString("testUnregisterOnSharedPreferenceChangeListener", "bar")
                 .commit();
-        assert !latch.await(5, TimeUnit.SECONDS) : "successfully timed-out!";
+        assert !latch.await(10, TimeUnit.SECONDS) : "successfully timed-out!";
     }
 
     public void testDifferentPrivateKeys() throws Exception {
