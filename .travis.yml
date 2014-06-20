@@ -12,7 +12,7 @@ before_install:
 script:
     - ./gradlew --stacktrace lint
     - # export COVERAGE=true
-    - ./gradlew --stacktrace connectedCheck || (adb logcat -t 100 && false)
+    - ./gradlew --stacktrace connectedCheck || (adb logcat -t 100 '*:E' && false)
 after_success:
     - #./gradlew --stacktrace coveralls
 after_script:
