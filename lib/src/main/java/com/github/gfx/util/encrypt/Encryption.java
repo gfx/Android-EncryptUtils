@@ -45,9 +45,9 @@ public class Encryption {
         assert packageDigest.length == KEY_LENGTH;
 
         for (int i = 0; i < privateKey.length; i++) {
-            privateKey[i] ^= packageDigest[i];
+            packageDigest[i] ^= privateKey[i];
         }
-        return privateKey;
+        return packageDigest;
     }
 
     private static byte[] md5(byte[] value) {
