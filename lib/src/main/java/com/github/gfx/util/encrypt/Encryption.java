@@ -37,17 +37,17 @@ public class Encryption {
     @NonNull
     public static byte[] getDefaultPrivateKey(@NonNull Context context) {
         ContentResolver contentResolver = context.getContentResolver();
-        byte[] privateKey = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+        byte[] androidId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
                 .getBytes(CHARSET);
-        assert privateKey.length == KEY_LENGTH;
+        assert androidId.length == KEY_LENGTH;
 
         byte[] packageDigest = md5(context.getPackageName().getBytes(CHARSET));
         assert packageDigest.length == KEY_LENGTH;
 
-        for (int i = 0; i < privateKey.length; i++) {
-            packageDigest[i] ^= privateKey[i];
+        for (int i = 0; i < androidId.length; i++) {
+            packageDigest[i] ^= androidId[i];
         }
-        return packageDigest;
+        return packageDigest; // mix of androidId and packageDigest
     }
 
     private static byte[] md5(byte[] value) {
