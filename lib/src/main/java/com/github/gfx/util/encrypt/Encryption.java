@@ -10,6 +10,7 @@ import android.util.Base64;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.Security;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
@@ -26,13 +27,35 @@ public class Encryption {
 
     private static final String TAG = Encryption.class.getSimpleName();
 
-    private static final String ALGORITHM = "AES";
+    private static final String DEFAULT_ALGORITHM_MODE =  "AES/CBC/PKCS5Padding";
 
-    private static final String ALGORITHM_MODE = ALGORITHM + "/CTR/PKCS5Padding";
+    private static final String LEGACY_ALGORITHM_MODE  =  "AES/CTR/PKCS5Padding"; // CTR/PKCS5Padding makes no sense
 
     private static final Charset CHARSET = Charset.forName("UTF-8");
 
     public static final int KEY_LENGTH = 128 / 8;
+
+    /**
+     * @return A {@link javax.crypto.Cipher} instance with "AES/CBC/PKC5Padding" transformation.
+     */
+    @NonNull
+    public static Cipher getDefaultCipher() {
+        try {
+            return Cipher.getInstance(DEFAULT_ALGORITHM_MODE);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+            throw new AssertionError(e);
+        }
+    }
+
+    @Deprecated
+    @NonNull
+    public static Cipher getLegacyDefaultCipher() {
+        try {
+            return Cipher.getInstance(LEGACY_ALGORITHM_MODE);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+            throw new AssertionError(e);
+        }
+    }
 
     @NonNull
     public static byte[] getDefaultPrivateKey(@NonNull Context context) {
@@ -62,7 +85,7 @@ public class Encryption {
 
 
     @NonNull
-    private static SecretKeySpec createKeySpec(@NonNull byte[] privateKey) {
+    private static SecretKeySpec createKeySpec(@NonNull Cipher cipher, @NonNull byte[] privateKey) {
         if (privateKey.length < KEY_LENGTH) {
             throw new IllegalArgumentException("private key is too short."
                     + " Expected=" + KEY_LENGTH + " but got=" + privateKey.length);
@@ -70,30 +93,44 @@ public class Encryption {
             throw new IllegalArgumentException("private key is too long."
                     + " Expected=" + KEY_LENGTH + " but got=" + privateKey.length);
         }
-        return new SecretKeySpec(privateKey, ALGORITHM_MODE);
+        return new SecretKeySpec(privateKey, cipher.getAlgorithm());
     }
 
 
-    private final SecretKeySpec privateKey;
+    private final SecretKeySpec secretKeySpec;
 
     private final Cipher cipher;
 
+    @Deprecated
     public Encryption(@NonNull Context context) {
-        this(getDefaultPrivateKey(context));
+        this(getLegacyDefaultCipher(), getDefaultPrivateKey(context));
     }
 
+    @Deprecated
     public Encryption(@NonNull String privateKey) {
-        this(privateKey.getBytes(CHARSET));
+        this(getLegacyDefaultCipher(), privateKey.getBytes(CHARSET));
     }
 
+    @Deprecated
     public Encryption(@NonNull byte[] privateKey) {
-        this.privateKey = createKeySpec(privateKey);
+        this(getLegacyDefaultCipher(), privateKey);
+    }
 
-        try {
-            cipher = Cipher.getInstance(ALGORITHM_MODE);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
-            throw new AssertionError(e);
-        }
+    public Encryption(@NonNull Cipher cipher, @NonNull Context context) {
+        this(cipher, getDefaultPrivateKey(context));
+    }
+
+    public Encryption(@NonNull Cipher cipher, @NonNull String privateKey) {
+        this(cipher, privateKey.getBytes(CHARSET));
+    }
+
+    public Encryption(@NonNull Cipher cipher, @NonNull byte[] privateKey) {
+        this(cipher, createKeySpec(cipher, privateKey));
+    }
+
+    public Encryption(@NonNull Cipher cipher, @NonNull SecretKeySpec secretKeySpec) {
+        this.cipher = cipher;
+        this.secretKeySpec = secretKeySpec;
     }
 
     @NonNull
@@ -101,7 +138,7 @@ public class Encryption {
         byte[] encrypted;
 
         try {
-            cipher.init(Cipher.ENCRYPT_MODE, privateKey);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
             encrypted = cipher.doFinal(plainText.getBytes(CHARSET));
         } catch (Exception e) {
             throw new UnexpectedEncryptionStateException(e);
@@ -120,7 +157,7 @@ public class Encryption {
         byte[] decrypted;
 
         try {
-            cipher.init(Cipher.DECRYPT_MODE, privateKey,
+            cipher.init(Cipher.DECRYPT_MODE, secretKeySpec,
                     new IvParameterSpec(buffer, 0, KEY_LENGTH));
             decrypted = cipher.doFinal(buffer, KEY_LENGTH, buffer.length - KEY_LENGTH);
         } catch (Exception e) {

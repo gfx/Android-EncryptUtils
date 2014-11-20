@@ -7,8 +7,12 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.test.AndroidTestCase;
 import android.test.mock.MockContext;
+import android.util.Log;
 
+import java.security.Provider;
 import java.util.Arrays;
+
+import javax.crypto.Cipher;
 
 @SuppressWarnings("Assert")
 public class EncryptionTest extends AndroidTestCase {
@@ -44,19 +48,19 @@ public class EncryptionTest extends AndroidTestCase {
 
     public void testTooShortPrivateKey() throws Exception {
         try {
-            new Encryption("?");
+            new Encryption(Encryption.getDefaultCipher(), "?");
             fail();
         } catch (IllegalArgumentException e) {
-
+            // OK
         }
     }
 
     public void testTooLongPrivateKey() throws Exception {
         try {
-            new Encryption(StringUtils.repeat(".", Encryption.KEY_LENGTH+1));
+            new Encryption(Encryption.getDefaultCipher(), StringUtils.repeat(".", Encryption.KEY_LENGTH+1));
             fail();
         } catch (IllegalArgumentException e) {
-
+            // OK
         }
     }
 
@@ -64,7 +68,7 @@ public class EncryptionTest extends AndroidTestCase {
     public void testEncryptDecrypt() throws Exception {
         for (int privateKeyPattern = 0; privateKeyPattern < 10; privateKeyPattern++) {
             String privateKey = RandomStringUtils.randomAscii(16);
-            Encryption encryption = new Encryption(privateKey);
+            Encryption encryption = new Encryption(Encryption.getDefaultCipher(), privateKey);
 
             for (int len = 1; len < 10000; len *= 2) {
                 for (int i = 0; i < 100; i++) {
@@ -80,7 +84,7 @@ public class EncryptionTest extends AndroidTestCase {
 
     public void testMultiByteString() throws Exception {
         String privateKey = RandomStringUtils.randomAscii(16);
-        Encryption encryption = new Encryption(privateKey);
+        Encryption encryption = new Encryption(Encryption.getDefaultCipher(), privateKey);
 
         String s = "日本語の混じった文字列。 Hello, world!";
         String encrypted = encryption.encrypt(s);
@@ -95,7 +99,7 @@ public class EncryptionTest extends AndroidTestCase {
     }
 
     public void testUsingDefaultPrivateKey() throws Exception {
-        Encryption encryption = new Encryption(getContext());
+        Encryption encryption = new Encryption(Encryption.getDefaultCipher(), getContext());
 
         String s = "Hello, world!";
         String encrypted = encryption.encrypt(s);
@@ -104,13 +108,13 @@ public class EncryptionTest extends AndroidTestCase {
         assert !s.equals(encrypted);
         assert decrypted.equals(s);
 
-        String decrypted2nd = new Encryption(getContext()).decrypt(encrypted);
+        String decrypted2nd = new Encryption(Encryption.getDefaultCipher(), getContext()).decrypt(encrypted);
 
         assert decrypted2nd.equals(decrypted);
     }
 
     public void testBadEncryption() throws Exception {
-        Encryption encryption = new Encryption(getContext());
+        Encryption encryption = new Encryption(Encryption.getDefaultCipher(), getContext());
 
         try {
             encryption.decrypt("foo");

@@ -15,6 +15,8 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.crypto.Cipher;
+
 /**
  * A {@link android.content.SharedPreferences} implementation where its values are encrypted by
  * {@link com.github.gfx.util.encrypt.Encryption}.
@@ -50,21 +52,22 @@ public class EncryptedSharedPreferences implements SharedPreferences {
      * {@link com.github.gfx.util.encrypt.Encryption} is determined by {@code
      * android.provider.Settings.Secure.ANDROID_ID}.
      *
+     * @param cipher - A {@link javax.crypto.Cipher} instance. Use {@code Encryption.getDefaultCipher()} if you don't want to think about it.
      * @param context - an application context used to get a base {@link android.content.SharedPreferences}
      *                and {@link com.github.gfx.util.encrypt.Encryption}
      */
-    public EncryptedSharedPreferences(@NonNull Context context) {
-        this(getDefaultSharedPreferences(context), new Encryption(context));
+    public EncryptedSharedPreferences(@NonNull Cipher cipher, @NonNull Context context) {
+        this(getDefaultSharedPreferences(context), new Encryption(cipher, context));
     }
 
-    public EncryptedSharedPreferences(@NonNull SharedPreferences base,
+    public EncryptedSharedPreferences(@NonNull Cipher cipher, @NonNull SharedPreferences base,
             @NonNull Context contextForDefaultPrivateKey) {
-        this(base, new Encryption(contextForDefaultPrivateKey));
+        this(base, new Encryption(cipher, contextForDefaultPrivateKey));
     }
 
-    public EncryptedSharedPreferences(@NonNull SharedPreferences base,
+    public EncryptedSharedPreferences(@NonNull Cipher cipher, @NonNull SharedPreferences base,
             @NonNull String privateKey) {
-        this(base, new Encryption(privateKey));
+        this(base, new Encryption(cipher, privateKey));
     }
 
     public EncryptedSharedPreferences(@NonNull SharedPreferences base,
@@ -72,6 +75,24 @@ public class EncryptedSharedPreferences implements SharedPreferences {
         this.base = base;
         this.encryption = encryption;
     }
+
+    @Deprecated
+    public EncryptedSharedPreferences(@NonNull Context context) {
+        this(getDefaultSharedPreferences(context), new Encryption(context));
+    }
+
+    @Deprecated
+    public EncryptedSharedPreferences(@NonNull SharedPreferences base,
+            @NonNull Context contextForDefaultPrivateKey) {
+        this(base, new Encryption(contextForDefaultPrivateKey));
+    }
+
+    @Deprecated
+    public EncryptedSharedPreferences(@NonNull SharedPreferences base,
+            @NonNull String privateKey) {
+        this(base, new Encryption(privateKey));
+    }
+
 
     @NonNull
     private String encodeKey(@NonNull String value) {
