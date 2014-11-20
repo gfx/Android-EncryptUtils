@@ -10,6 +10,7 @@ import android.util.Base64;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.Security;
 
 import javax.crypto.Cipher;
@@ -27,6 +28,8 @@ public class Encryption {
 
     private static final String TAG = Encryption.class.getSimpleName();
 
+    private static final String DEFAULT_PROVIDER = "AndroidOpenSSL";
+
     private static final String DEFAULT_ALGORITHM_MODE =  "AES/CBC/PKCS5Padding";
 
     private static final String LEGACY_ALGORITHM_MODE  =  "AES/CTR/PKCS5Padding"; // CTR/PKCS5Padding makes no sense
@@ -41,8 +44,8 @@ public class Encryption {
     @NonNull
     public static Cipher getDefaultCipher() {
         try {
-            return Cipher.getInstance(DEFAULT_ALGORITHM_MODE);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+            return Cipher.getInstance(DEFAULT_ALGORITHM_MODE, DEFAULT_PROVIDER);
+        } catch (NoSuchProviderException | NoSuchAlgorithmException | NoSuchPaddingException e) {
             throw new AssertionError(e);
         }
     }
