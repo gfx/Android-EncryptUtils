@@ -27,7 +27,7 @@ public class Encryption {
 
     private static final String TAG = Encryption.class.getSimpleName();
 
-    private static final String DEFAULT_PROVIDER = "AndroidOpenSSL";
+    private static final String DEFAULT_PROVIDER = "BC"; // AndroidOpenSSL is not available on Android 2.3.x
 
     private static final String DEFAULT_ALGORITHM_MODE =  "AES/CBC/PKCS5Padding";
 
