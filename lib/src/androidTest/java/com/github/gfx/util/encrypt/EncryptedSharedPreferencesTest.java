@@ -211,7 +211,6 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
                     @Override
                     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
                             String key) {
-                        assert sharedPreferences == prefs;
                         events.add(key);
                         latch.countDown();
                     }
