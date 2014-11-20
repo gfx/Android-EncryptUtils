@@ -1,5 +1,11 @@
 # The Revision History of Android-EncryptUtils
 
+## NEXT
+
+* Add new interfaces that takes a `javax.crypto.Cipher` instance and deprecate old ones
+  * Deprecated interfaces uses AES/CTR/PKC5Padding algorithm mode with the default provider, which could **break existing data on OS updates**
+* Add Encryption.getDefaultCipher() to get a Cipher instance with AES/CTR/PKC5Padding with AndroidOpenSSL provider
+
 ## v1.2.0 2014-06-18 07:50:43+0900
 
 * Change the atrifact id from `encrypt-utils` to `android-encrypt-utils`
