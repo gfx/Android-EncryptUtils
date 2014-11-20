@@ -1,6 +1,6 @@
 # The Revision History of Android-EncryptUtils
 
-## NEXT
+## v2.0.0 2014-11-21 01:37:06+0900
 
 * Add new interfaces that takes a `javax.crypto.Cipher` instance and deprecate old ones
   * Deprecated interfaces uses AES/CTR/PKC5Padding algorithm mode with the default provider, which could **break existing data on OS updates**
