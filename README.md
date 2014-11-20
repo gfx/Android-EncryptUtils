@@ -1,4 +1,4 @@
-# Android-EncryptUtils [![Build Status](https://travis-ci.org/gfx/Android-EncryptUtils.svg)](https://travis-ci.org/gfx/Android-EncryptUtils) [![Coverage Status](https://coveralls.io/repos/gfx/Android-EncryptUtils/badge.png)](https://coveralls.io/r/gfx/Android-EncryptUtils)
+# Android-EncryptUtils [![Build Status](https://travis-ci.org/gfx/Android-EncryptUtils.svg)](https://travis-ci.org/gfx/Android-EncryptUtils) [![Coverage Status](https://img.shields.io/coveralls/gfx/Android-EncryptUtils.svg)](https://coveralls.io/r/gfx/Android-EncryptUtils?branch=master)
 
 This is a set of class libraries that provides a way to save credentials in Android devices.
 
