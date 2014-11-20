@@ -3,6 +3,9 @@ env:
     - TARGET=android-10 ABI=armeabi
     - TARGET=android-19 ABI=armeabi-v7a
     - TARGET=android-21 ABI=armeabi-v7a
+matrix:
+    allow_falures:
+        - env: TARGET=android-21 ABI=armeabi-v7a
 before_install:
     - export TERM=dumb # to get clean gradle output
     - android list targets # for debugging
