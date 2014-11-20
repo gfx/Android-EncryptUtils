@@ -5,6 +5,7 @@ import org.apache.commons.io.FileUtils;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.test.AndroidTestCase;
 import android.util.Log;
@@ -19,12 +20,17 @@ import java.util.concurrent.TimeUnit;
 
 @SuppressLint("Assert")
 public class EncryptedSharedPreferencesTest extends AndroidTestCase {
+    private boolean defaultCipherNotAvailable() {
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH;
+    }
 
     private SharedPreferences prefs;
 
     @Override
     public void setUp() throws Exception {
         super.setUp();
+
+        if (defaultCipherNotAvailable()) return;
 
         Context context = getContext();
         assert context != null;
@@ -34,6 +40,8 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
 
     @Override
     public void tearDown() throws Exception {
+        if (defaultCipherNotAvailable()) return;
+
         if (false) {
             // dump the file content
             String sharedPrefsContent = slurpSharedPrefsFile(
@@ -50,6 +58,8 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
     }
 
     private String slurpSharedPrefsFile(String name) throws IOException {
+        if (defaultCipherNotAvailable()) return;
+
         Context context = getContext();
         assert context != null;
         File appDir = context.getFilesDir().getParentFile();
@@ -59,6 +69,8 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
     }
 
     public void testConstructorInterfaces() throws Exception {
+        if (defaultCipherNotAvailable()) return;
+
         SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(getContext());
         new EncryptedSharedPreferences(Encryption.getDefaultCipher(), getContext());
         new EncryptedSharedPreferences(Encryption.getDefaultCipher(), p, getContext());
@@ -67,56 +79,78 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
     }
 
     public void testString() throws Exception {
+        if (defaultCipherNotAvailable()) return;
+
         prefs.edit().putString("foo", "bar").apply();
 
         assert prefs.getString("foo", "*").equals("bar");
     }
 
     public void testStringDefaultValue() throws Exception {
+        if (defaultCipherNotAvailable()) return;
+
         assert prefs.getString("foo", "*").equals("*");
     }
 
     public void testInt() throws Exception {
+        if (defaultCipherNotAvailable()) return;
+
         prefs.edit().putInt("foo", 42).apply();
 
         assert prefs.getInt("foo", 10) == 42;
     }
 
     public void testIntDefaultValue() throws Exception {
+        if (defaultCipherNotAvailable()) return;
+
         assert prefs.getInt("foo", 10) == 10;
     }
 
     public void testLong() throws Exception {
+        if (defaultCipherNotAvailable()) return;
+
         prefs.edit().putLong("foo", 42L).apply();
 
         assert prefs.getLong("foo", 10L) == 42L;
     }
 
     public void testLongDefaultValue() throws Exception {
+        if (defaultCipherNotAvailable()) return;
+
         assert prefs.getLong("foo", 10L) == 10L;
     }
 
     public void testFloat() throws Exception {
+        if (defaultCipherNotAvailable()) return;
+
         prefs.edit().putFloat("foo", 42.1f).apply();
 
         assert prefs.getFloat("foo", 10.1f) == 42.1f;
     }
 
     public void testFloatDefaultValue() throws Exception {
+        if (defaultCipherNotAvailable()) return;
+
         assert prefs.getFloat("foo", 10.1f) == 10.1f;
     }
 
     public void testBoolean() throws Exception {
+        if (defaultCipherNotAvailable()) return;
+
         prefs.edit().putBoolean("foo", true).apply();
 
         assert prefs.getBoolean("foo", false);
     }
 
     public void testBooleanDefaultValue() throws Exception {
+        if (defaultCipherNotAvailable()) return;
+
         assert prefs.getBoolean("foo", true);
     }
 
     public void testContains() throws Exception {
+        if (defaultCipherNotAvailable()) return;
+
         prefs.edit().putString("foo", "bar").apply();
 
         assert prefs.contains("foo");
@@ -124,6 +158,8 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
     }
 
     public void testAll() throws Exception {
+        if (defaultCipherNotAvailable()) return;
+
         prefs.edit()
                 .putString("foo", "aaa")
                 .putString("bar", "bbb")
@@ -137,6 +173,8 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
     }
 
     public void testCommit() throws Exception {
+        if (defaultCipherNotAvailable()) return;
+
         SharedPreferences.Editor editor = prefs.edit();
 
         editor.putString("foo", "bar");
@@ -149,6 +187,8 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
     }
 
     public void testRemove() throws Exception {
+        if (defaultCipherNotAvailable()) return;
+
         SharedPreferences.Editor editor = prefs.edit();
 
         editor.putString("foo", "aaa");
@@ -164,6 +204,8 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
     }
 
     public void testClear() throws Exception {
+        if (defaultCipherNotAvailable()) return;
+
         SharedPreferences.Editor editor = prefs.edit();
 
         editor.putString("foo", "aaa");
@@ -179,6 +221,8 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
     }
 
     public void testFileEncrypted() throws Exception {
+        if (defaultCipherNotAvailable()) return;
+
         final CountDownLatch latch = new CountDownLatch(1);
         prefs.registerOnSharedPreferenceChangeListener(
                 new SharedPreferences.OnSharedPreferenceChangeListener() {
@@ -201,6 +245,8 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
     }
 
     public void testRegisterOnSharedPreferenceChangeListenerForPut() throws Exception {
+        if (defaultCipherNotAvailable()) return;
+
         String key = "testRegisterOnSharedPreferenceChangeListenerForPut";
 
         final CountDownLatch latch = new CountDownLatch(1);
@@ -227,6 +273,8 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
     }
 
     public void testUnregisterOnSharedPreferenceChangeListener() throws Exception {
+        if (defaultCipherNotAvailable()) return;
+
         final CountDownLatch latch = new CountDownLatch(1);
         SharedPreferences.OnSharedPreferenceChangeListener listener
                 = new SharedPreferences.OnSharedPreferenceChangeListener() {
@@ -246,6 +294,8 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
     }
 
     public void testDifferentPrivateKeys() throws Exception {
+        if (defaultCipherNotAvailable()) return;
+
         SharedPreferences base = getContext().getSharedPreferences("prefs", Context.MODE_PRIVATE);
 
         SharedPreferences prefs1 = new EncryptedSharedPreferences(Encryption.getDefaultCipher(), base, "012345678912345a");

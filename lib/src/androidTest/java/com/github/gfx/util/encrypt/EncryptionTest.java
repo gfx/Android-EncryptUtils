@@ -6,12 +6,16 @@ import org.apache.commons.lang3.StringUtils;
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.os.Build;
 import android.test.AndroidTestCase;
 import android.test.mock.MockContext;
 import java.util.Arrays;
 
 @SuppressWarnings("Assert")
 public class EncryptionTest extends AndroidTestCase {
+    private boolean defaultCipherNotAvailable() {
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH;
+    }
 
     public void testDefaultPrivateKeyForContext() throws Exception {
         final Context context = getContext();
@@ -43,6 +47,8 @@ public class EncryptionTest extends AndroidTestCase {
     }
 
     public void testTooShortPrivateKey() throws Exception {
+        if (defaultCipherNotAvailable()) return;
+
         try {
             new Encryption(Encryption.getDefaultCipher(), "?");
             fail();
@@ -52,6 +58,8 @@ public class EncryptionTest extends AndroidTestCase {
     }
 
     public void testTooLongPrivateKey() throws Exception {
+        if (defaultCipherNotAvailable()) return;
+
         try {
             new Encryption(Encryption.getDefaultCipher(), StringUtils.repeat(".", Encryption.KEY_LENGTH+1));
             fail();
@@ -62,6 +70,8 @@ public class EncryptionTest extends AndroidTestCase {
 
 
     public void testEncryptDecrypt() throws Exception {
+        if (defaultCipherNotAvailable()) return;
+
         for (int privateKeyPattern = 0; privateKeyPattern < 10; privateKeyPattern++) {
             String privateKey = RandomStringUtils.randomAscii(16);
             Encryption encryption = new Encryption(Encryption.getDefaultCipher(), privateKey);
@@ -79,6 +89,8 @@ public class EncryptionTest extends AndroidTestCase {
     }
 
     public void testMultiByteString() throws Exception {
+        if (defaultCipherNotAvailable()) return;
+
         String privateKey = RandomStringUtils.randomAscii(16);
         Encryption encryption = new Encryption(Encryption.getDefaultCipher(), privateKey);
 
@@ -95,6 +107,8 @@ public class EncryptionTest extends AndroidTestCase {
     }
 
     public void testUsingDefaultPrivateKey() throws Exception {
+        if (defaultCipherNotAvailable()) return;
+
         Encryption encryption = new Encryption(Encryption.getDefaultCipher(), getContext());
 
         String s = "Hello, world!";
@@ -110,6 +124,8 @@ public class EncryptionTest extends AndroidTestCase {
     }
 
     public void testBadEncryption() throws Exception {
+        if (defaultCipherNotAvailable()) return;
+
         Encryption encryption = new Encryption(Encryption.getDefaultCipher(), getContext());
 
         try {
