@@ -3,6 +3,7 @@ package com.github.gfx.util.encrypt;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.test.AndroidTestCase;

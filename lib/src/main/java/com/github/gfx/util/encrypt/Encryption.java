@@ -1,8 +1,10 @@
 package com.github.gfx.util.encrypt;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.util.Base64;
@@ -27,9 +29,15 @@ public class Encryption {
 
     private static final String TAG = Encryption.class.getSimpleName();
 
-    private static final String DEFAULT_PROVIDER = "BC"; // AndroidOpenSSL is not available on Android 2.3.x
+    /**
+     * The default security provider, "AndroidOpenSSL", which is not available on Android 2.3.x.
+     */
+    public static final String DEFAULT_PROVIDER = "AndroidOpenSSL";
 
-    private static final String DEFAULT_ALGORITHM_MODE =  "AES/CBC/PKCS5Padding";
+    /**
+     * The default algorithm mode, "AES/CBC/PKCS5Padding".
+     */
+    public static final String DEFAULT_ALGORITHM_MODE =  "AES/CBC/PKCS5Padding";
 
     private static final String LEGACY_ALGORITHM_MODE  =  "AES/CTR/PKCS5Padding"; // CTR/PKCS5Padding makes no sense
 
@@ -41,6 +49,7 @@ public class Encryption {
      * @return A {@link javax.crypto.Cipher} instance with "AES/CBC/PKC5Padding" transformation.
      */
     @NonNull
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     public static Cipher getDefaultCipher() {
         try {
             return Cipher.getInstance(DEFAULT_ALGORITHM_MODE, DEFAULT_PROVIDER);
