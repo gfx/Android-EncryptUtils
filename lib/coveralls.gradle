@@ -12,13 +12,6 @@ buildscript {
     }
 }
 
-// https://github.com/kt3k/coveralls-gradle-plugin/blob/master/src%2Fmain%2Fgroovy%2Forg%2Fkt3k%2Fgradle%2Fplugin%2Fcoveralls%2Fdomain%2FJacocoSourceReportFactory.groovy
-sourceSets {
-    main {
-        java.srcDirs = ['src']
-    }
-}
-
 coveralls {
     jacocoReportPath 'build/outputs/reports/coverage/debug/report.xml'
 }
