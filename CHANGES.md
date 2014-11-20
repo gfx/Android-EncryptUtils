@@ -4,7 +4,9 @@
 
 * Add new interfaces that takes a `javax.crypto.Cipher` instance and deprecate old ones
   * Deprecated interfaces uses AES/CTR/PKC5Padding algorithm mode with the default provider, which could **break existing data on OS updates**
-* Add Encryption.getDefaultCipher() to get a Cipher instance with AES/CTR/PKC5Padding with BC (*BouncyCastle*) provider
+* Add Encryption.getDefaultCipher() to get a Cipher instance with `AES/CTR/PKC5Padding`` with `AndroidOpenSSL` security provider
+  * Note that `AndroidOpenSSL` is not available on Ginger Bread (API level 10), so you have to get a cipher instance
+    with an available security provider, e.g. `BC` (*BouncyCastle*)
 
 ## v1.2.1 2014-07-23 23:29:49+0900
 
