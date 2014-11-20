@@ -58,8 +58,6 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
     }
 
     private String slurpSharedPrefsFile(String name) throws IOException {
-        if (defaultCipherNotAvailable()) return;
-
         Context context = getContext();
         assert context != null;
         File appDir = context.getFilesDir().getParentFile();
