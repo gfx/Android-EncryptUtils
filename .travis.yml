@@ -15,9 +15,9 @@ before_install:
     - android-wait-for-emulator
 script:
     - ./gradlew --stacktrace lint
-    - # export COVERAGE=true
+    - export COVERAGE=true
     - ./gradlew --stacktrace connectedCheck || (adb logcat -t 100 '*:E' && false)
 after_success:
-    - #./gradlew --stacktrace coveralls
+    - ./gradlew --stacktrace coveralls
 after_script:
     - android delete avd -n test

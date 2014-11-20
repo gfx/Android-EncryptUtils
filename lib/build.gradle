@@ -25,6 +25,7 @@ android {
     }
 
     if (COVERAGE) {
+        println("[NOTE] coverage enabled.")
         jacoco {
             version '0.7.+'
         }
