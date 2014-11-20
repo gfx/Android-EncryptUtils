@@ -18,6 +18,6 @@ script:
     - export COVERAGE=true
     - ./gradlew --stacktrace connectedCheck || (adb logcat -t 100 '*:E' && false)
 after_success:
-    - ./gradlew --stacktrace coveralls
+    - ./gradlew --stacktrace -b lib/coveralls.gradle coveralls
 after_script:
     - android delete avd -n test
