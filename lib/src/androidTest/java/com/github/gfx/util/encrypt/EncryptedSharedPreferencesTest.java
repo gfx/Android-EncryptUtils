@@ -28,7 +28,7 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
 
         Context context = getContext();
         assert context != null;
-        prefs = new EncryptedSharedPreferences(context);
+        prefs = new EncryptedSharedPreferences(Encryption.getDefaultCipher(), context);
         //prefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
@@ -42,7 +42,7 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
         }
         prefs.edit()
                 .clear()
-                .commit();
+                .apply();
         prefs = null;
 
         super.tearDown();
@@ -60,10 +60,10 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
 
     public void testConstructorInterfaces() throws Exception {
         SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(getContext());
-        new EncryptedSharedPreferences(getContext());
-        new EncryptedSharedPreferences(p, getContext());
-        new EncryptedSharedPreferences(p, new Encryption("0123456789abcdef"));
-        new EncryptedSharedPreferences(p, "0123456789abcdef");
+        new EncryptedSharedPreferences(Encryption.getDefaultCipher(), getContext());
+        new EncryptedSharedPreferences(Encryption.getDefaultCipher(), p, getContext());
+        new EncryptedSharedPreferences(Encryption.getDefaultCipher(), p, "0123456789abcdef");
+        new EncryptedSharedPreferences(p, new Encryption(Encryption.getDefaultCipher(), "0123456789abcdef"));
     }
 
     public void testString() throws Exception {
@@ -211,7 +211,8 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
                     @Override
                     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
                             String key) {
-                        assert sharedPreferences == prefs;
+                        // prefs might be null depending on timing
+                        // assert sharedPreferences == prefs;
                         events.add(key);
                         latch.countDown();
                     }
@@ -247,8 +248,8 @@ public class EncryptedSharedPreferencesTest extends AndroidTestCase {
     public void testDifferentPrivateKeys() throws Exception {
         SharedPreferences base = getContext().getSharedPreferences("prefs", Context.MODE_PRIVATE);
 
-        SharedPreferences prefs1 = new EncryptedSharedPreferences(base, "012345678912345a");
-        SharedPreferences prefs2 = new EncryptedSharedPreferences(base, "012345678912345b");
+        SharedPreferences prefs1 = new EncryptedSharedPreferences(Encryption.getDefaultCipher(), base, "012345678912345a");
+        SharedPreferences prefs2 = new EncryptedSharedPreferences(Encryption.getDefaultCipher(), base, "012345678912345b");
 
         final CountDownLatch latch = new CountDownLatch(2);
         SharedPreferences.OnSharedPreferenceChangeListener listener

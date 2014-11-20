@@ -1,5 +1,11 @@
 # The Revision History of Android-EncryptUtils
 
+## NEXT
+
+* Add new interfaces that takes a `javax.crypto.Cipher` instance and deprecate old ones
+  * Deprecated interfaces uses AES/CTR/PKC5Padding algorithm mode with the default provider, which could **break existing data on OS updates**
+* Add Encryption.getDefaultCipher() to get a Cipher instance with AES/CTR/PKC5Padding with BC (*BouncyCastle*) provider
+
 ## v1.2.1 2014-07-23 23:29:49+0900
 
 * Fix a crash issue where the length of ANDROID_ID < 16 (#2 #3; thanks to tomorrowkey)

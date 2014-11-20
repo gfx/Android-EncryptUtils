@@ -23,8 +23,8 @@ packag name and `ANDROID_ID` by default.
 ```java
 Encryption encryption = new Encryption(context);
 String plainText = ...;
-String encrypted = encrypt.encrypt(plainText);
-String decrypted = encrypt.decrypt(encrypted);
+String encrypted = encryption.encrypt(plainText);
+String decrypted = encryption.decrypt(encrypted);
 
 assert plainText.equals(decrypted);
 ```

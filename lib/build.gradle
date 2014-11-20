@@ -8,15 +8,9 @@ apply from: 'https://raw.githubusercontent.com/shamanland/gradle-mvn-push/master
 
 def COVERAGE = Boolean.parseBoolean(System.getenv('COVERAGE'))
 
-dependencies {
-    compile 'com.android.support:support-annotations:+'
-    androidTestCompile 'org.apache.commons:commons-lang3:+'
-    androidTestCompile 'org.apache.commons:commons-io:+'
-}
-
 android {
-    compileSdkVersion 19
-    buildToolsVersion '19.1.0'
+    compileSdkVersion 21
+    buildToolsVersion '21.1.1'
     defaultConfig {
         minSdkVersion 10 // 2.3.3
         targetSdkVersion 19
@@ -31,6 +25,7 @@ android {
     }
 
     if (COVERAGE) {
+        println("[NOTE] coverage enabled.")
         jacoco {
             version '0.7.+'
         }
@@ -41,4 +36,11 @@ android {
         }
     }
 }
+
+dependencies {
+    compile 'com.android.support:support-annotations:+'
+    androidTestCompile 'org.apache.commons:commons-lang3:+'
+    androidTestCompile 'org.apache.commons:commons-io:+'
+}
+
 
