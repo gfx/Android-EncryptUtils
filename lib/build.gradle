@@ -9,11 +9,11 @@ apply from: 'https://raw.githubusercontent.com/shamanland/gradle-mvn-push/master
 def COVERAGE = Boolean.parseBoolean(System.getenv('COVERAGE'))
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion '21.1.1'
+    compileSdkVersion 22
+    buildToolsVersion '22.0.0'
     defaultConfig {
         minSdkVersion 10 // 2.3.3
-        targetSdkVersion 21
+        targetSdkVersion 22
         versionCode VERSION_CODE
         versionName VERSION_NAME
     }
