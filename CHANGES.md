@@ -7,6 +7,8 @@
 * Add Encryption.getDefaultCipher() to get a Cipher instance with `AES/CTR/PKC5Padding`` with `AndroidOpenSSL` security provider
   * Note that `AndroidOpenSSL` is not available on Ginger Bread (API level 10), so you have to get a cipher instance
     with an available security provider, e.g. `BC` (*BouncyCastle*)
+* Migration from 1.x: Use `new EncryptedSharedPreferences(Encryption.getDefaultCipher(), context)` instead of
+  `new EncryptedSharedPreferences(context)`; this changes the cipher algorithm, though.
 
 ## v1.2.1 2014-07-23 23:29:49+0900
 

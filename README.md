@@ -4,13 +4,13 @@ This is a set of class libraries that provides a way to save credentials in Andr
 
 Note that this is not perfectly secure because private keys could not be concealed so the attacker
 are able to decrypt data if they have the device and enough time. However, this library should
-prevent data from 10-munutes cracking.
+prevent data from 10-minutes cracking.
 
 ## Gradle Dependencies
 
 ```gradle
 dependencies {
-    compile 'com.github.gfx.util.encrypt:android-encrypt-utils:1.2.+'
+    compile 'com.github.gfx.util.encrypt:android-encrypt-utils:2.0.0'
 }
 ```
 
@@ -21,7 +21,7 @@ This is a utility to encrypt and decrypt credentials.
 packag name and `ANDROID_ID` by default.
 
 ```java
-Encryption encryption = new Encryption(context);
+Encryption encryption = new Encryption(Encryption.getDefaultCipher() ,context);
 String plainText = ...;
 String encrypted = encryption.encrypt(plainText);
 String decrypted = encryption.decrypt(encrypted);
@@ -29,20 +29,20 @@ String decrypted = encryption.decrypt(encrypted);
 assert plainText.equals(decrypted);
 ```
 
-You can also specify a private key.
+You can also specify a private key instead of a context.
 
 ```java
 byte[] privateKey = ...;
 assert privateKey.length == 16; // you must ensure!
-Encryption encryption = new Encryption(privateKey);
+Encryption encryption = new Encryption(Encryption.getDefaultCipher(), privateKey);
 ```
 
-## EncrptedSharedPreferences
+## EncryptedSharedPreferences
 
 This is an implementation of SharedPreferences that encrypts data.
 
 ```java
-SharedPreferences prefs = new EncryptedSharedPreferences(context);
+SharedPreferences prefs = new EncryptedSharedPreferences(Encryption.getDefaultCipher(), context);
 
 prefs.editor()
     .putString("email", email)
